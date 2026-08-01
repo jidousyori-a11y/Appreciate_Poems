@@ -1,23 +1,29 @@
 :root {
-  --color-bg: #ffffff;
-  --color-surface: #f5f5f7;
-  --color-border: #d9d9de;
-  --color-text: #1c1c1e;
-  --color-muted: #6b6b70;
-  --color-accent: #3b5bdb;
+  --color-bg: #fffdfb;
+  --color-header-bg: #fdf0e6;
+  --color-surface: #fef6ef;
+  --color-border: #f6e2cf;
+  --color-text: #3a2b22;
+  --color-muted: #96796a;
+  --color-accent: #e0824f;
   --color-accent-contrast: #ffffff;
   color-scheme: light dark;
 }
 
+/* このアプリは意図的に、OSがダークモードでも明るい暖色パレットのまま表示する
+   (2026-08-01 ユーザー指定: 「背景をもっと明るく」という要望が、実際には
+   ブラウザ側がダークモードだったため反映されて見えなかった経緯があるため、
+   ダークモード分岐そのものをやめて常時ブライトにしている) */
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-bg: #17181c;
-    --color-surface: #202128;
-    --color-border: #34353d;
-    --color-text: #e9e9ee;
-    --color-muted: #9a9aa2;
-    --color-accent: #6c8cff;
-    --color-accent-contrast: #10121a;
+    --color-bg: #fffaf3;
+    --color-header-bg: #fde2cb;
+    --color-surface: #fef1e1;
+    --color-border: #f0c99e;
+    --color-text: #33251c;
+    --color-muted: #8a6f5c;
+    --color-accent: #e0824f;
+    --color-accent-contrast: #ffffff;
   }
 }
 
@@ -47,7 +53,7 @@ body {
   position: sticky;
   top: 0;
   z-index: 10;
-  background: var(--color-bg);
+  background: var(--color-header-bg);
   border-bottom: 1px solid var(--color-border);
   padding: 0.75rem 1rem;
 }
