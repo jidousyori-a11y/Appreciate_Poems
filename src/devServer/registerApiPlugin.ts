@@ -1,0 +1,125 @@
+import fs from "node:fs";
+import path from "node:path";
+import type { Plugin } from "vite";
+import matter from "gray-matter";
+import { generateIndex, POEMS_DIR } from "../../scripts/generate-index.mjs";
+
+function slugify(title: string): string {
+  const base = title
+    .trim()
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}]+/gu, "-")
+    .replace(/^-+|-+$/g, "");
+  return (base || "poem") + "-" + Date.now().toString(36);
+}
+
+function readBody(req: any): Promise<any> {
+  return new Promise((resolve, reject) => {
+    let data = "";
+    req.on("data", (chunk: any) => (data += chunk));
+    req.on("end", () => {
+      try {
+        resolve(data ? JSON.parse(data) : {});
+      } catch (err) {
+        reject(err);
+      }
+    });
+    req.on("error", reject);
+  });
+}
+
+/**
+ * 開発サーバー限定の詩登録・編集API。
+ * ビルド出力(dist)には一切含まれないため、公開サイトには登録機能が存在しない。
+ */
+export function registerApiPlugin(): Plugin {
+  return {
+    name: "register-api",
+    buildStart() {
+      generateIndex();
+    },
+    configureServer(server) {
+      server.middlewares.use(async (req, res, next) => {
+        if (!req.url?.startsWith("/api/poems")) return next();
+        res.setHeader("Content-Type", "application/json; charset=utf-8");
+
+        try {
+          if (req.method === "POST" && req.url === "/api/poems") {
+            const body = await readBody(req);
+            const now = new Date().toISOString();
+            const id = slugify(body.title ?? "poem");
+            const frontmatter = {
+              id,
+              title: body.title ?? "(無題)",
+              author: typeof body.author === "string" ? body.author : "",
+              tags: Array.isArray(body.tags) ? body.tags : [],
+              source: typeof body.source === "string" ? body.source : "",
+              note: typeof body.note === "string" ? body.note : "",
+              createdAt: now,
+              updatedAt: now,
+            };
+            const fileContent = matter.stringify(body.content ?? "", frontmatter);
+            fs.mkdirSync(POEMS_DIR, { recursive: true });
+            fs.writeFileSync(path.join(POEMS_DIR, `${id}.md`), fileContent, "utf-8");
+            generateIndex();
+            res.statusCode = 201;
+            res.end(JSON.stringify({ id, createdAt: now }));
+            return;
+          }
+
+          const match = req.url.match(/^\/api\/poems\/([^/]+)$/);
+
+          if (req.method === "DELETE" && match) {
+            const id = decodeURIComponent(match[1]);
+            const filePath = path.join(POEMS_DIR, `${id}.md`);
+            if (!fs.existsSync(filePath)) {
+              res.statusCode = 404;
+              res.end(JSON.stringify({ error: "not found" }));
+              return;
+            }
+            fs.unlinkSync(filePath);
+            generateIndex();
+            res.statusCode = 200;
+            res.end(JSON.stringify({ id }));
+            return;
+          }
+
+          if (req.method === "PUT" && match) {
+            const id = decodeURIComponent(match[1]);
+            const filePath = path.join(POEMS_DIR, `${id}.md`);
+            if (!fs.existsSync(filePath)) {
+              res.statusCode = 404;
+              res.end(JSON.stringify({ error: "not found" }));
+              return;
+            }
+            const body = await readBody(req);
+            const existing = matter(fs.readFileSync(filePath, "utf-8"));
+            const now = new Date().toISOString();
+            const frontmatter = {
+              id,
+              title: body.title ?? existing.data.title,
+              author: typeof body.author === "string" ? body.author : (existing.data.author ?? ""),
+              tags: Array.isArray(body.tags) ? body.tags : existing.data.tags,
+              source: typeof body.source === "string" ? body.source : (existing.data.source ?? ""),
+              note: typeof body.note === "string" ? body.note : (existing.data.note ?? ""),
+              createdAt: existing.data.createdAt,
+              updatedAt: now,
+            };
+            const fileContent = matter.stringify(body.content ?? existing.content, frontmatter);
+            fs.writeFileSync(filePath, fileContent, "utf-8");
+            generateIndex();
+            res.statusCode = 200;
+            res.end(JSON.stringify({ id, updatedAt: now }));
+            return;
+          }
+
+          res.statusCode = 404;
+          res.end(JSON.stringify({ error: "not found" }));
+        } catch (err) {
+          res.statusCode = 500;
+          res.end(JSON.stringify({ error: String(err) }));
+        }
+      });
+    },
+  };
+}
