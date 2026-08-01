@@ -3,6 +3,7 @@ id: 夏草や-兵どもが-夢の跡-ms9zruwc
 title: 夏草や 兵どもが 夢の跡
 author: 松尾芭蕉
 tags:
+  - 有名句
   - 俳句
 source: おくのほそ道
 note: ''

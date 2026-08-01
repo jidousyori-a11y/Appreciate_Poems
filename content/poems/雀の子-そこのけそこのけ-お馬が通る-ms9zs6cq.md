@@ -3,6 +3,7 @@ id: 雀の子-そこのけそこのけ-お馬が通る-ms9zs6cq
 title: 雀の子 そこのけそこのけ お馬が通る
 author: 小林一茶
 tags:
+  - 有名句
   - 俳句
 source: ''
 note: ''

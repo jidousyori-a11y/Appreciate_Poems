@@ -3,6 +3,7 @@ id: 我と来て-遊べや親の-ない雀-ms9zs7zq
 title: 我と来て 遊べや親の ない雀
 author: 小林一茶
 tags:
+  - 有名句
   - 俳句
 source: ''
 note: ''

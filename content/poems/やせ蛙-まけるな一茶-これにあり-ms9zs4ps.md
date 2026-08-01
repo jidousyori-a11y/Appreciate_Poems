@@ -3,6 +3,7 @@ id: やせ蛙-まけるな一茶-これにあり-ms9zs4ps
 title: やせ蛙 まけるな一茶 これにあり
 author: 小林一茶
 tags:
+  - 有名句
   - 俳句
 source: ''
 note: ''

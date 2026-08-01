@@ -3,6 +3,7 @@ id: 荒海や-佐渡によこたふ-天の河-ms9zrzsy
 title: 荒海や 佐渡によこたふ 天の河
 author: 松尾芭蕉
 tags:
+  - 有名句
   - 俳句
 source: おくのほそ道
 note: ''

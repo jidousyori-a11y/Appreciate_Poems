@@ -3,6 +3,7 @@ id: 五月雨を-あつめて早し-最上川-ms9zrwjv
 title: 五月雨を あつめて早し 最上川
 author: 松尾芭蕉
 tags:
+  - 有名句
   - 俳句
 source: おくのほそ道
 note: ''

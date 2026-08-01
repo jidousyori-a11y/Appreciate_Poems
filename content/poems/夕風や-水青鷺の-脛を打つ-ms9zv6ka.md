@@ -3,6 +3,7 @@ id: 夕風や-水青鷺の-脛を打つ-ms9zv6ka
 title: 夕風や 水青鷺の 脛を打つ
 author: 与謝蕪村
 tags:
+  - 有名句
   - 俳句
 source: ''
 note: ''

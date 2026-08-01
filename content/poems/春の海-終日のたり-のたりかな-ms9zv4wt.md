@@ -3,6 +3,7 @@ id: 春の海-終日のたり-のたりかな-ms9zv4wt
 title: 春の海 終日のたり のたりかな
 author: 与謝蕪村
 tags:
+  - 有名句
   - 俳句
 source: ''
 note: ''
